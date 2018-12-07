@@ -8,7 +8,7 @@ hauteur = 1080
 fenetre = Tk()
 fenetre.title('Pong')
 canvas = Canvas(fenetre, width = largeur, height = hauteur, bg = 'white')
-img_balle = PhotoImage(file = "Projet_Pong/Ressources/balle.png")
+img_balle = PhotoImage(file = "D:\Drive\Google\Ynov\Projet\Projet_Pong\Ressources/balle.png")
 balle = canvas.create_image(0, 0, anchor = NW, image = img_balle)
 
 # Placement des composants
