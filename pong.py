@@ -1,19 +1,46 @@
 from  tkinter import *
 
-# Création des variables
-largeur = 1920
-hauteur = 1080
-
-# Création des composants
 fenetre = Tk()
 fenetre.title('Pong')
-canvas = Canvas(fenetre, width = largeur, height = hauteur, bg = 'white')
-img_balle = PhotoImage(file = "D:\Drive\Google\Ynov\Projet\Projet_Pong\Ressources/balle.png")
-balle = canvas.create_image(0, 0, anchor = NW, image = img_balle)
+fenetre.attributes('-fullscreen', 1)
+
+# Création des fonctions
+def gameTick():
+    global dx, dy
+    coords = canvas.coords(balle)
+    if coords[0] <= 0 or coords[2] >= largeur:
+        dx *= -1
+    if coords[1] <= 0 or coords[3] >= hauteur:
+        dy *= -1
+    canvas.move(balle, dx, dy)
+    fenetre.after(5, gameTick)
+
+# Création des variables
+largeur = fenetre.winfo_screenwidth()
+hauteur = fenetre.winfo_screenheight()
+dimensions = str(largeur) + 'x' + str(hauteur)
+dx = 3
+dy = 3
+
+# Création des composants
+fenetre.geometry(dimensions)
+
+    # Canvas
+canvas = Canvas(fenetre, width = largeur, height = hauteur, bg = 'black')
+ligne = canvas.create_line(largeur / 2, 0, largeur /2, hauteur, fill = 'white', dash = (4,2,4,4))
+balle = canvas.create_oval((largeur / 2 - 10, hauteur / 2 - 10), (largeur / 2 + 10, hauteur / 2 + 10), fill = 'white')
+
+    # Menu principal
+menu = Frame(fenetre, )
+
 
 # Placement des composants
-canvas.grid(row = 0, column = 0, columnspan = 2)
+canvas.pack()
 
+# Appel des fonctions
+gameTick()
 
 # Boucle infinie
 fenetre.mainloop()
+
+
