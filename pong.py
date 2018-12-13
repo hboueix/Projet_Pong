@@ -11,12 +11,10 @@ def ouvrir_menu():
     return menu
 
 def start_pong():
-    global canvas, ligne, balle
+    global canvas, ligne, balle, raq1, raq2
     canvas, ligne, balle, raq1, raq2 = ouvrir_canvas()
-    canvas.bind_all('<Down>', move_raq_bas)
-    canvas.bind_all('<Up>', move_raq_haut)
-    canvas.bind_all('x', move_raq_bas)
-    canvas.bind_all('z', move_raq_haut)
+    canvas.focus_set()
+    clavier()
     move_balle()
 
 def ouvrir_canvas():
@@ -29,6 +27,12 @@ def ouvrir_canvas():
     canvas.pack()
     return canvas, ligne, balle, raq1, raq2
 
+def clavier():
+    canvas.bind_all('x', move_J1)
+    canvas.bind_all('z', move_J1)
+    canvas.bind_all('<Down>', move_J2)
+    canvas.bind_all('<Up>', move_J2)
+
 def move_balle():
     global dx, dy
     coords = canvas.coords(balle) # coords = (x1, y1, x2, y2)
@@ -39,15 +43,21 @@ def move_balle():
     canvas.move(balle, dx, dy)
     fenetre.after(5, move_balle) 
 
-def move_raq_bas(event):
-    global raq1
-    canvas.move(raq1, 0, 10)
-    print('down')
+def move_J1(event):
+    if dx < 0:
+        touche = event.keysym
+        if touche == 'x':
+            canvas.move(raq1, 0, 10)
+        if touche == 'z':
+            canvas.move(raq1, 0, -10)
 
-def move_raq_haut(event):
-    global raq1
-    canvas.move(raq1, 0, -10)
-    print('up')
+def move_J2(event):
+    if dx > 0:
+        touche = event.keysym
+        if touche == 'Down':
+            canvas.move(raq2, 0, 10)
+        if touche == 'Up':
+            canvas.move(raq2, 0, -10)
 
 # Fenêtre principale
 fenetre = Tk()
