@@ -28,10 +28,11 @@ def ouvrir_canvas():
     return canvas, ligne, balle, raq1, raq2
 
 def clavier():
-    canvas.bind_all('x', move_J1)
-    canvas.bind_all('z', move_J1)
-    canvas.bind_all('<Down>', move_J2)
-    canvas.bind_all('<Up>', move_J2)
+    canvas.bind_all('x', move_down_J1)
+    canvas.bind_all('z', move_up_J1)
+    canvas.bind_all('<Down>', move_down_J2)
+    canvas.bind_all('<Up>', move_up_J2)
+    tour_J()
 
 def move_balle():
     global dx, dy
@@ -43,21 +44,33 @@ def move_balle():
     canvas.move(balle, dx, dy)
     fenetre.after(5, move_balle) 
 
-def move_J1(event):
-    if dx < 0:
-        touche = event.keysym
-        if touche == 'x':
-            canvas.move(raq1, 0, 10)
-        if touche == 'z':
-            canvas.move(raq1, 0, -10)
-
-def move_J2(event):
+def tour_J():
     if dx > 0:
-        touche = event.keysym
-        if touche == 'Down':
-            canvas.move(raq2, 0, 10)
-        if touche == 'Up':
-            canvas.move(raq2, 0, -10)
+        canvas.unbind_all('x')
+        canvas.unbind_all('z')
+        canvas.bind_all('<Down>', move_down_J2)
+        canvas.bind_all('<Up>', move_up_J2)
+    if dx < 0:
+        canvas.unbind_all('<Down>')
+        canvas.unbind_all('<Up>')
+        canvas.bind_all('x', move_down_J1)
+        canvas.bind_all('z', move_up_J1)
+    fenetre.after(5, tour_J)
+
+def move_up_J1(event):
+    canvas.move(raq1, 0, -30)
+
+def move_down_J1(event):
+    canvas.move(raq1, 0, 30)
+
+def move_up_J2(event):
+    canvas.move(raq2, 0, -30)
+
+def move_down_J2(event):
+    canvas.move(raq2, 0, 30)
+
+def balle_raq():
+    pass
 
 # Fenêtre principale
 fenetre = Tk()
