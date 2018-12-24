@@ -3,7 +3,7 @@ from  tkinter import *
 
 # Définition des fonctions
 
-def ouvrir_menu():
+def ouvrir_menu():  # Début
     menu = Frame(fenetre, borderwidth = 2, relief = GROOVE, bg = "white")
     menu.pack(expand = TRUE)
     Label(menu, text = 'Menu principal', font = '-size 50', bg = 'white').pack(padx = 100, pady = 50)
@@ -12,7 +12,15 @@ def ouvrir_menu():
     return menu
 
 
-def start_pong():
+def init_pong():     #victoire
+    global canvas
+    canvas.destroy()
+    canvas, ligne, balle, raq1, raq2, J1, J2 = (0 for i in range(7))
+    scores = {'J1' : 0, 'J2' : 0}
+    menu
+    
+
+def start_pong():   # Bouton 'Start'
     global canvas, ligne, balle, raq1, raq2, J1, J2
     canvas, ligne, balle, raq1, raq2, J1, J2 = ouvrir_canvas()
     clavier()
@@ -20,8 +28,8 @@ def start_pong():
     move_balle()
 
 
-def ouvrir_canvas():
-    menu.pack_forget()
+def ouvrir_canvas():    # start_pong
+    menu.destroy()
     canvas = Canvas(fenetre, width = largeur, height = hauteur, bg = 'black')
     ligne = canvas.create_line(centre_x, 0, centre_x, hauteur, fill = 'white', dash = (4,2,4,4))
     balle = canvas.create_oval((centre_x - 10, centre_y - 10), (centre_x + 10, centre_y + 10), fill = 'white')
@@ -33,7 +41,7 @@ def ouvrir_canvas():
     return canvas, ligne, balle, raq1, raq2, J1, J2
 
 
-def clavier():
+def clavier():  # start_pong
     canvas.bind_all('x', move_down_J1)
     canvas.bind_all('z', move_up_J1)
     canvas.bind_all('<Down>', move_down_J2)
@@ -41,7 +49,7 @@ def clavier():
     tour_J()
 
 
-def move_balle():
+def move_balle():   # start_pong
     global dx, dy, menu, score
     coo_b = canvas.coords(balle) # coo_b = (x1, y1, x2, y2)
     coo1 = canvas.coords(raq1)
@@ -54,9 +62,8 @@ def move_balle():
         score()
         canvas.coords(balle, centre_x - 10, centre_y - 10, centre_x + 10, centre_y + 10)
         fenetre.after(1000, move_balle)
-    elif scores['J1'] == 3 or scores['J2'] == 3:
-        canvas.pack_forget()
-        menu.pack(expand = TRUE)
+    elif scores['J1'] == win or scores['J2'] == win:
+        victoire()
     else:    
         if coo_b[1] <= 0 or coo_b[3] >= hauteur:
             dy *= -1
@@ -66,7 +73,16 @@ def move_balle():
         fenetre.after(10, move_balle)
 
 
-def tour_J():
+def score():    # start_pong
+    canvas.itemconfigure(J1, text = scores['J1'])
+    canvas.itemconfigure(J2, text = scores['J2'])
+
+
+def victoire():
+    init_pong()
+
+
+def tour_J():   # clavier, tour_J
     if dx > 0:
         canvas.unbind_all('x')
         canvas.unbind_all('z')
@@ -77,33 +93,29 @@ def tour_J():
         canvas.unbind_all('<Up>')
         canvas.bind_all('x', move_down_J1)
         canvas.bind_all('z', move_up_J1)
-    fenetre.after(1, tour_J)
+    if scores['J1'] < win and scores['J2'] <= win:
+        fenetre.after(10, tour_J)
 
 
-def move_up_J1(event):
+def move_up_J1(event):  # clavier
     coo = canvas.coords(raq1)
     if coo[1] >= 25:
         canvas.move(raq1, 0, -25)
 
-def move_down_J1(event):
+def move_down_J1(event):    # clavier
     coo = canvas.coords(raq1)
     if (hauteur - coo[3]) >= 25:
         canvas.move(raq1, 0, 25)
 
-def move_up_J2(event):
+def move_up_J2(event):  # clavier
     coo = canvas.coords(raq2)
     if coo[1] >= 25:
         canvas.move(raq2, 0, -25)
 
-def move_down_J2(event):
+def move_down_J2(event):    # clavier
     coo = canvas.coords(raq2)
     if (hauteur - coo[3]) >= 25:
         canvas.move(raq2, 0, 25)
-
-
-def score():
-    canvas.itemconfigure(J1, text = scores['J1'])
-    canvas.itemconfigure(J2, text = scores['J2'])
 
 
 
@@ -122,6 +134,7 @@ centre_x = largeur / 2
 centre_y = hauteur / 2
 dx, dy = 3, 3
 scores = {'J1' : 0, 'J2' : 0}
+win = 3     # Score à atteindre
 
 
 # Appel des fonctions
