@@ -1,7 +1,7 @@
 from tkinter import *
 
 #Classes
-class MenuPrincipal: # lancement, /start_pong
+class MenuPrincipal: # lancement, /parametrage
 
     def __init__(self):
         self.menu = Frame(fenetre, borderwidth = 2, relief = GROOVE, bg = "white")
@@ -10,22 +10,56 @@ class MenuPrincipal: # lancement, /start_pong
         Button(self.menu, text = 'Start', command = parametrage, font = '-size 22').pack(ipadx = 20, pady = 20)
         Button(self.menu, text = 'Quitter', command = fenetre.destroy, font = '-size 22').pack(ipadx = 20, pady = 20)
 
-class EcranParametre:
+class EcranParametre: # parametrage, /start_pong
 
     def __init__(self):
         var_win, var_vit = StringVar(), StringVar()
         var_win.set(3)
         var_vit.set(3)
+
         self.ecran = Frame(fenetre, borderwidth = 2, relief = GROOVE, bg = "white")
         self.ecran.pack(expand = TRUE)
         Label(self.ecran, text = 'Paramètres', font = '-size 50', bg = 'white').grid(row = 0, column = 0, columnspan = 5, padx = 100, pady = 50)
+
         Label(self.ecran, text = 'Points gagnants :', font = '-size 15', bg = 'white').grid(row = 1, column = 2)
         self.e_win = Entry(self.ecran, textvariable = var_win, width = 10, relief = GROOVE, bd = 3)
         self.e_win.grid(row = 1, column = 3, ipadx = 20, pady = 20)
+
         Label(self.ecran, text = 'Vitesse de la balle (en px) :', font = '-size 15', bg = 'white').grid(row = 2, column = 2)
         self.e_vit = Entry(self.ecran, textvariable = var_vit, width = 10, relief = GROOVE, bd = 3)
         self.e_vit.grid(row = 2, column = 3, ipadx = 20, pady = 20)
-        Button(self.ecran, text = 'OK', command = start_pong, font = '-size 22').grid(row = 4, column = 4, ipadx = 20, pady = 20)
+
+        Label(self.ecran, text = 'Couleur des raquettes :', font = '-size 15', bg = 'white').grid(row = 3, column = 2)
+        self.couleurs_raq = Listbox(self.ecran, selectmode = 'single', width = 10, height = 1, exportselection = 0)
+        self.couleurs_raq.grid(row = 3, column = 3, ipadx = 20, ipady = 20, padx = 20, pady = 20)
+        self.couleurs_raq.insert(END, 'Blanc')
+        self.couleurs_raq.insert(END, 'Noir')
+        self.couleurs_raq.insert(END, 'Rouge')
+        self.couleurs_raq.insert(END, 'Bleu')
+        self.couleurs_raq.insert(END, 'Vert')
+        self.couleurs_raq.insert(END, 'Jaune')
+
+        Label(self.ecran, text = 'Couleur de la balle :', font = '-size 15', bg = 'white').grid(row = 4, column = 2)
+        self.couleurs_ba = Listbox(self.ecran, selectmode = 'single', width = 10, height = 1, exportselection = 0)
+        self.couleurs_ba.grid(row = 4, column = 3, ipadx = 20, ipady = 20, padx = 20, pady = 20)
+        self.couleurs_ba.insert(END, 'Blanc')
+        self.couleurs_ba.insert(END, 'Noir')
+        self.couleurs_ba.insert(END, 'Rouge')
+        self.couleurs_ba.insert(END, 'Bleu')
+        self.couleurs_ba.insert(END, 'Vert')
+        self.couleurs_ba.insert(END, 'Jaune')
+
+        Label(self.ecran, text = 'Couleur du background :', font = '-size 15', bg = 'white').grid(row = 5, column = 2)
+        self.couleurs_bg = Listbox(self.ecran, selectmode = 'single', width = 10, height = 1, exportselection = 0)
+        self.couleurs_bg.grid(row = 5, column = 3, ipadx = 20, ipady = 20, padx = 20, pady = 20)
+        self.couleurs_bg.insert(END, 'Noir')
+        self.couleurs_bg.insert(END, 'Rouge')
+        self.couleurs_bg.insert(END, 'Bleu')
+        self.couleurs_bg.insert(END, 'Vert')
+        self.couleurs_bg.insert(END, 'Jaune')
+
+        Button(self.ecran, text = 'OK', command = start_pong, font = '-size 22').grid(row = 6, column = 2, columnspan = 2, ipadx = 20, pady = 20)
+        
 
 class Canevas: # start_pong
 
@@ -34,7 +68,7 @@ class Canevas: # start_pong
         self.hauteur = fenetre.winfo_screenheight()
         self.centre_x = self.largeur / 2
         self.centre_y = self.hauteur / 2
-        self.canvas = Canvas(fenetre, width = self.largeur, height = self.hauteur, bg = 'black')
+        self.canvas = Canvas(fenetre, width = self.largeur, height = self.hauteur, bg = coul_bg)
         self.ligne = self.canvas.create_line(self.centre_x, 0, self.centre_x, self.hauteur, fill = 'white', dash = (4,2,4,4))
         self.canvas.pack()
 
@@ -42,7 +76,7 @@ class Canevas: # start_pong
 class Balle: # start_pong
 
     def __init__(self):
-        self.balle = canvas.create_oval((can.centre_x - 10, can.centre_y - 10), (can.centre_x + 10, can.centre_y + 10), fill = 'white')
+        self.balle = canvas.create_oval((can.centre_x - 10, can.centre_y - 10), (can.centre_x + 10, can.centre_y + 10), fill = coul_ba)
 
     def gameTick(self):
         global dx, dy
@@ -75,8 +109,8 @@ class Balle: # start_pong
 class Raquettes: # start_pong
 
     def __init__(self):
-        self.raq1 = canvas.create_rectangle(20, (can.centre_y - can.hauteur /10), 40, (can.centre_y + can.hauteur / 10), fill = 'white')
-        self.raq2 = canvas.create_rectangle(can.largeur - 40, (can.centre_y - can.hauteur /10), can.largeur - 20, (can.centre_y + can.hauteur / 10), fill = 'white')
+        self.raq1 = canvas.create_rectangle(20, (can.centre_y - can.hauteur /10), 40, (can.centre_y + can.hauteur / 10), fill = coul_raq)
+        self.raq2 = canvas.create_rectangle(can.largeur - 40, (can.centre_y - can.hauteur /10), can.largeur - 20, (can.centre_y + can.hauteur / 10), fill = coul_raq)
         canvas.focus_set()
         canvas.bind('<KeyPress>', move)
 
@@ -89,14 +123,14 @@ class Score(): # start_pong
 
 
 # Fonctions
-def parametrage():
+def parametrage(): # menu
     global ecr, ecran
     menu.destroy()
     ecr = EcranParametre()
     ecran = ecr.ecran 
 
-def start_pong(): # menu
-    global can, canvas, bal, balle, raq, raq1, raq2, score, scores, win, dx, dy
+def start_pong(): # ecran_para
+    global can, canvas, bal, balle, raq, raq1, raq2, score, scores, win, dx, dy, coul_raq, coul_ba, coul_bg
     win = ecr.e_win.get()
     if win == '':
         win = 3
@@ -104,6 +138,12 @@ def start_pong(): # menu
     if dx == '':
         dx = 3
     dy = dx
+    coul_raq = couleurs(ecr.couleurs_raq.curselection(), 0)
+    coul_ba = couleurs(ecr.couleurs_ba.curselection(), 0)
+    coul_bg = couleurs(ecr.couleurs_bg.curselection(), 1)
+    print(coul_raq)
+    print(coul_ba)
+    print(coul_bg)
     ecran.destroy()
     can = Canevas()
     canvas = can.canvas
@@ -114,6 +154,23 @@ def start_pong(): # menu
     score = Score()
     scores = {'J1' : 0, 'J2' : 0}
     bal.gameTick()
+
+def couleurs(ind, bg):
+    colors = {0 : 'white', 1 : 'black', 2 : 'red', 3 : 'blue', 4 : 'green', 5 : 'yellow'}
+    if ind == ():
+        if bg == 0:
+            color = 'white'
+        elif bg == 1:
+            color = 'black'
+    else:
+        if bg == 0:
+            for i in ind:
+                color = colors[i]
+        elif bg == 1:
+            for i in ind:
+                color = colors[i + 1]
+    return color
+
 
 def move(event): # clavier
     coo1 = canvas.coords(raq1)
