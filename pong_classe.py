@@ -1,4 +1,5 @@
 from tkinter import *
+import time
 
 #Classes
 class MenuPrincipal: # lancement, /parametrage
@@ -60,6 +61,19 @@ class EcranParametre: # parametrage, /start_pong
 
         Button(self.ecran, text = 'OK', command = start_pong, font = '-size 22').grid(row = 6, column = 2, columnspan = 2, ipadx = 20, pady = 20)
         
+
+class EcranFin:
+
+    def __init__(self):
+        self.ecran = Frame(fenetre, borderwidth = 2, relief = GROOVE, bg = "white")
+        self.ecran.pack(expand = TRUE)
+        Label(self.ecran, text = gagnant + ' a gagné !', font = '-size 50', bg = 'white').grid(row = 0, column = 0, columnspan = 5, padx = 100, pady = 50)
+        Label(self.ecran, text = 'J1 : ' + str(scores['J1']) + ' points', font = '-size 15', bg = 'white').grid(row = 1, column = 1, ipadx = 20, ipady = 20)
+        Label(self.ecran, text = 'J2 : ' + str(scores['J2']) + ' points', font = '-size 15', bg = 'white').grid(row = 1, column = 3, ipadx = 20, ipady = 20)
+        Label(self.ecran, text = 'Le match a duré : ' + str(durée) + ' secondes.', font = '-size 15', bg = 'white').grid(row = 2, column = 1, columnspan = 3, ipadx = 20, ipady = 20, padx = 20, pady = 20)
+        Button(self.ecran, text = 'Rejouer', command = rejouer, font = '-size 22').grid(row = 5, column = 1, padx = 70, ipadx = 20, pady = 20)
+        Button(self.ecran, text = 'Menu', command = reboot, font = '-size 22').grid(row = 5, column = 3, padx = 70, ipadx = 20, pady = 20)
+
 
 class Canevas: # start_pong
 
@@ -130,7 +144,7 @@ def parametrage(): # menu
     ecran = ecr.ecran 
 
 def start_pong(): # ecran_para
-    global can, canvas, bal, balle, raq, raq1, raq2, score, scores, win, dx, dy, coul_raq, coul_ba, coul_bg
+    global can, canvas, bal, balle, raq, raq1, raq2, score, scores, win, dx, dy, coul_raq, coul_ba, coul_bg, t_debut
     win = ecr.e_win.get()
     if win == '':
         win = 3
@@ -141,9 +155,6 @@ def start_pong(): # ecran_para
     coul_raq = couleurs(ecr.couleurs_raq.curselection(), 0)
     coul_ba = couleurs(ecr.couleurs_ba.curselection(), 0)
     coul_bg = couleurs(ecr.couleurs_bg.curselection(), 1)
-    print(coul_raq)
-    print(coul_ba)
-    print(coul_bg)
     ecran.destroy()
     can = Canevas()
     canvas = can.canvas
@@ -154,8 +165,9 @@ def start_pong(): # ecran_para
     score = Score()
     scores = {'J1' : 0, 'J2' : 0}
     bal.gameTick()
+    t_debut = time.time()
 
-def couleurs(ind, bg):
+def couleurs(ind, bg): # start_pong
     colors = {0 : 'white', 1 : 'black', 2 : 'red', 3 : 'blue', 4 : 'green', 5 : 'yellow'}
     if ind == ():
         if bg == 0:
@@ -185,9 +197,27 @@ def move(event): # clavier
         canvas.move(raq2, 0, 25)
 
 def victoire(): # gameTick
-    global menu
+    global gagnant, fin, durée
+    t_fin = time.time()
+    t = t_fin - t_debut
+    durée = round(t, 1)
+    if scores['J1'] == int(win):
+        gagnant = 'J1'
+    elif scores['J2'] == int(win):
+        gagnant = 'J2'
     canvas.destroy()
+    fin = EcranFin().ecran
+
+def reboot(): # ecran_fin
+    global menu
+    fin.destroy()
     menu = MenuPrincipal().menu
+
+def rejouer(): # ecran_fin
+    global ecr, ecran
+    fin.destroy()
+    ecr = EcranParametre()
+    ecran = ecr.ecran 
 
 
 # Fenêtre principale
